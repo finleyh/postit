@@ -35,3 +35,7 @@ services:
       retries: 20
     networks:
       - default
+
+networks:
+  dev_lab:
+    external: true
