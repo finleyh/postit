@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PostIt</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <h1>PostIt</h1>
+    <p class="muted">Drop images, paste from your clipboard, then post them.</p>
+
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form id="post-form" action="{{ url_for('create_post') }}" method="post"
+          enctype="multipart/form-data">
+      <label class="dropzone" id="dropzone" for="images">
+        <strong>Drop images here</strong>
+        <span>or click to choose files</span>
+        <span>Clipboard images can also be pasted anywhere on this page.</span>
+        <input id="images" name="images" type="file" accept="image/*" multiple>
+      </label>
+
+      <div id="preview" class="preview"></div>
+
+      <button id="post-button" type="submit" disabled>Post It</button>
+    </form>
+  </main>
+
+<script>
+const input = document.getElementById("images");
+const form = document.getElementById("post-form");
+const dropzone = document.getElementById("dropzone");
+const preview = document.getElementById("preview");
+const button = document.getElementById("post-button");
+
+let files = [];
+
+function addFiles(newFiles) {
+  for (const file of newFiles) {
+    if (file.type && file.type.startsWith("image/")) {
+      files.push(file);
+    }
+  }
+  render();
+}
+
+function render() {
+  preview.innerHTML = "";
+  button.disabled = files.length === 0;
+
+  files.forEach((file, index) => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "preview-item";
+
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.alt = file.name || "Pasted image";
+
+    const label = document.createElement("span");
+    label.textContent = file.name || "Pasted image";
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.textContent = "×";
+    remove.title = "Remove image";
+    remove.onclick = () => {
+      files.splice(index, 1);
+      render();
+    };
+
+    wrapper.append(img, label, remove);
+    preview.appendChild(wrapper);
+  });
+}
+
+input.addEventListener("change", () => {
+  addFiles(input.files);
+  input.value = "";
+});
+
+document.addEventListener("paste", (event) => {
+  const pastedImages = [];
+  for (const item of event.clipboardData.items) {
+    if (item.type.startsWith("image/")) {
+      const blob = item.getAsFile();
+      if (blob) {
+        pastedImages.push(new File(
+          [blob],
+          `clipboard-${Date.now()}-${pastedImages.length}.png`,
+          { type: blob.type || "image/png" }
+        ));
+      }
+    }
+  }
+  if (pastedImages.length) {
+    event.preventDefault();
+    addFiles(pastedImages);
+  }
+});
+
+["dragenter", "dragover"].forEach(type => {
+  dropzone.addEventListener(type, event => {
+    event.preventDefault();
+    dropzone.classList.add("dragging");
+  });
+});
+
+["dragleave", "drop"].forEach(type => {
+  dropzone.addEventListener(type, event => {
+    event.preventDefault();
+    dropzone.classList.remove("dragging");
+  });
+});
+
+dropzone.addEventListener("drop", event => {
+  addFiles(event.dataTransfer.files);
+});
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const data = new FormData();
+  files.forEach(file => data.append("images", file, file.name));
+
+  button.disabled = true;
+  button.textContent = "Posting…";
+
+  try {
+    const response = await fetch(form.action, {
+      method: "POST",
+      body: data,
+      redirect: "follow"
+    });
+
+    if (response.redirected) {
+      window.location.href = response.url;
+      return;
+    }
+
+    document.open();
+    document.write(await response.text());
+    document.close();
+  } catch (error) {
+    button.disabled = false;
+    button.textContent = "Post It";
+    alert("Upload failed. Please try again.");
+  }
+});
+</script>
+</body>
+</html>

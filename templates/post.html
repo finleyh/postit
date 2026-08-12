@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PostIt {{ post.id }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <div class="post-header">
+      <div>
+        <h1>PostIt</h1>
+        <p class="muted">Post ID: <code>{{ post.id }}</code></p>
+      </div>
+      <a class="button secondary" href="{{ url_for('index') }}">New post</a>
+    </div>
+
+    <div class="images">
+      {% for image in post.images %}
+        {% set image_url = url_for('serve_image', post_id=post.id, image_id=image.id, _external=True) %}
+        <figure>
+          <a href="{{ image_url }}">
+            <img src="{{ image_url }}" alt="{{ image.filename }}">
+          </a>
+          <figcaption>
+            <code>{{ image_url }}</code>
+            <button type="button" onclick="copyText({{ image_url|tojson }}, this)">Copy URL</button>
+            <button type="button" onclick="copyText({{ ('![' ~ image.filename ~ '](' ~ image_url ~ ')')|tojson }}, this)">Copy Markdown</button>
+          </figcaption>
+        </figure>
+      {% endfor %}
+    </div>
+
+    <section class="post-link">
+      <strong>Post page:</strong>
+      <code id="post-url">{{ request.url }}</code>
+      <button type="button" onclick="copyText({{ request.url|tojson }}, this)">Copy URL</button>
+    </section>
+  </main>
+
+<script>
+async function copyText(text, button) {
+  try {
+    await navigator.clipboard.writeText(text);
+    const old = button.textContent;
+    button.textContent = "Copied!";
+    setTimeout(() => button.textContent = old, 1200);
+  } catch {
+    alert(text);
+  }
+}
+</script>
+</body>
+</html>

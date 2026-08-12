@@ -1,0 +1,193 @@
+
+:root {
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #f4f4f5;
+  background: #08090a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255,255,255,.06), transparent 30rem),
+    radial-gradient(circle at 100% 100%, rgba(255,255,255,.035), transparent 32rem),
+    #08090a;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .035;
+  background-image: linear-gradient(rgba(255,255,255,.7) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,.7) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.container {
+  position: relative;
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 52px 22px 80px;
+}
+h1 {
+  margin: 0;
+  letter-spacing: -.045em;
+  font-size: clamp(2.4rem, 7vw, 5rem);
+  line-height: .95;
+}
+.muted { color: #8d8d93; }
+.error {
+  margin: 22px 0;
+  padding: 14px 16px;
+  border: 1px solid #6d3232;
+  border-radius: 10px;
+  background: #211011;
+  color: #ffb4b4;
+}
+.dropzone {
+  display: flex;
+  min-height: 280px;
+  margin-top: 34px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px dashed #44464b;
+  border-radius: 18px;
+  background: rgba(20,21,23,.82);
+  box-shadow: inset 0 1px rgba(255,255,255,.035), 0 20px 60px rgba(0,0,0,.25);
+  cursor: pointer;
+  transition: .18s ease;
+}
+.dropzone:hover, .dropzone.dragging {
+  border-color: #a8a8ad;
+  background: #151619;
+  transform: translateY(-1px);
+}
+.dropzone strong { font-size: 1.2rem; }
+.dropzone span { color: #777980; }
+.dropzone input { display: none; }
+
+.preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 22px 0;
+}
+.preview-item {
+  position: relative;
+  overflow: hidden;
+  padding: 8px;
+  border: 1px solid #292b2f;
+  border-radius: 12px;
+  background: #111214;
+}
+.preview-item img {
+  width: 100%;
+  height: 135px;
+  display: block;
+  object-fit: contain;
+  border-radius: 7px;
+  background: #090a0b;
+}
+.preview-item span {
+  display: block;
+  margin-top: 7px;
+  overflow: hidden;
+  color: #a5a6aa;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.preview-item button {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid #3c3d42;
+  border-radius: 50%;
+  background: rgba(0,0,0,.75);
+  color: #fff;
+  cursor: pointer;
+}
+button, .button {
+  border: 1px solid #44464b;
+  border-radius: 9px;
+  padding: 10px 15px;
+  background: #e8e8e8;
+  color: #0b0b0c;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+  transition: .15s ease;
+}
+button:hover, .button:hover {
+  background: #fff;
+  transform: translateY(-1px);
+}
+button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.secondary {
+  background: #17181b;
+  color: #eee;
+}
+.images {
+  display: grid;
+  gap: 24px;
+  margin-top: 30px;
+}
+figure {
+  margin: 0;
+  padding: 10px;
+  border: 1px solid #292b2f;
+  border-radius: 14px;
+  background: #101113;
+  box-shadow: 0 18px 55px rgba(0,0,0,.22);
+}
+figure img {
+  display: block;
+  max-width: 100%;
+  max-height: 80vh;
+  margin: auto;
+  border-radius: 8px;
+}
+figcaption {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding: 3px;
+}
+code {
+  color: #c5c6ca;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: .84em;
+}
+figcaption code, .post-link code {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+figcaption button, .post-link button {
+  padding: 7px 10px;
+  font-size: 12px;
+}
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.post-link {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 26px;
+  padding: 14px;
+  border: 1px solid #292b2f;
+  border-radius: 10px;
+  background: #101113;
+}
