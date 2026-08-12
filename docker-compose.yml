@@ -19,12 +19,9 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-change-me}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change-root-me}
     volumes:
-      - mysql_data:/var/lib/mysql
+      - /mnt/images/postit_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "postit", "-pchange-me"]
       interval: 5s
       timeout: 5s
       retries: 20
-
-volumes:
-  mysql_data:
