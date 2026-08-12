@@ -4,11 +4,19 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: mysql+pymysql://postit:${MYSQL_PASSWORD:-change-me}@mysql:3306/postit
-    ports:
-      - "8080:8080"
     depends_on:
       mysql:
         condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.postitrtr.rule=HOST(`postit.trashcollector.dev`)"
+      - "traefik.http.routers.postitrtr.entrypoints=https"
+      - "traefik.http.routers.postitrtr.tls.certresolver=letsencrypt"
+      - "traefik.http.services.postitrtr.loadbalancer.server.port=8080"
+      - "traefik.docker.network=dev_lab"
+    networks:
+      - dev_lab
+      - default
 
   mysql:
     image: mysql:8.4
@@ -25,3 +33,5 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+    networks:
+      - default
